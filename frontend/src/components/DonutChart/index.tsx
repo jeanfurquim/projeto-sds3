@@ -2,6 +2,7 @@ import Chart from 'react-apexcharts'
 import axios from 'axios'
 import { BASE_URL } from 'utils/requests'
 import { SaleSum } from 'types/sale'
+import { useEffect, useState } from 'react'
 
 type ChartData = {
     labels: string[],
@@ -9,18 +10,20 @@ type ChartData = {
 }
 
 const DonutChart = () => {
-    //FORMA ERRADA
-    let charData: ChartData = { labels: [], series: [] }
+    const [chartData, setChartData] = useState<ChartData>({labels: [], series: []})
 
-    axios.get(`${BASE_URL}/sales/amount-by-seller`)
+    useEffect( () =>{
+        axios.get(`${BASE_URL}/sales/amount-by-seller`)
         .then(response => {
             const data = response.data as SaleSum[]
             const myLabels = data.map(x => x.sellerName)
             const mySeries = data.map(x => x.sum)
 
-            charData = { labels: myLabels, series: mySeries}
-            console.log(charData)
+            setChartData({ labels: myLabels, series: mySeries })
         })
+    }, [])
+
+   
 
     //const mockData = {
     //  series: [477138, 499928, 444867, 220426, 473088],
@@ -34,8 +37,8 @@ const DonutChart = () => {
     }
     return (
         <Chart
-            options={{ ...options, labels: charData.labels }}
-            series={charData.series}
+            options={{ ...options, labels: chartData.labels }}
+            series={chartData.series}
             type="donut"
             height="240"
         />

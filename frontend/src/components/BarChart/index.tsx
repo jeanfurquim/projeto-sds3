@@ -21,7 +21,7 @@ type ChartData = {
 
 }
 
-
+//teste
 
 
 const BarChart = () => {
